@@ -11,11 +11,20 @@ app.use(body.urlencoded({
 app.use(body.json())
 app.use(cors())
 
-log.info({configuration: config})
+log.info("Loaded configuration", {configuration: config})
 
 app.get('/', (req, res) => res.send('Hello World!'))
 app.post('/', (req, res) => {
-    console.info(`${req.method} ${req.originalUrl}`)
+    log.info(
+        "Received request",
+        {
+            req: {
+                body: req.body,
+                url: req.originalUrl,
+                method: req.method
+            }
+        }
+    )
     res.send({
         stat: "Received message",
         msg: req.body,
