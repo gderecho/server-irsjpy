@@ -18,5 +18,13 @@ spec:
           image: <IMAGE>
           ports:
           - containerPort: 80
+          env:
+            - name: IRSJPY_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: elephant-url
+                  key: string
+            - name: IRSJPY_SERVER_PORT
+              value: "80"
       imagePullSecrets:
         - name: github
