@@ -1,0 +1,22 @@
+# credit to https://blog.mayadata.io/openebs/steps-to-deploy-angular-application-on-kubernetes
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: irsjpy-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: irsjpy-server
+  template:
+    metadata:
+      labels:
+        app: irsjpy-server
+    spec:
+      containers:
+        - name: irsjpy-server
+          image: <IMAGE>
+          ports:
+          - containerPort: 80
+      imagePullSecrets:
+        - name: github

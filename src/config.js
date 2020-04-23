@@ -4,7 +4,7 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 
 module.exports = {
-    port: parseInt(process.env.IRSJPY_SERVER_PORT, 10) || 3000,
+    port: parseInt(process.env.IRSJPY_SERVER_PORT, 10) || 3001,
     databaseurl: process.env.IRSJPY_DATABASE_URL,
     loglevel: process.env.IRSJPY_LOGLEVEL || 'silly',
     environment: process.env.NODE_ENV
