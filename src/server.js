@@ -3,6 +3,8 @@ const body = require('body-parser')
 const cors = require('cors')
 const config = require('./config');
 const log = require('./log')(config);
+const data = require('./data')(config.databaseurl, log);
+
 const app = express()
 
 app.use(body.urlencoded({
@@ -13,7 +15,18 @@ app.use(cors())
 
 log.info("Loaded configuration", {configuration: config})
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => {
+    data.messages(
+        (err, result) => {
+            if(err) {
+                log.error(err)
+            } else {
+                log.info("Queried database successfully")
+            }
+            res.send(result.rows)
+        }
+    )
+})
 app.post('/', (req, res) => {
     log.info(
         "Received request",
@@ -33,3 +46,4 @@ app.post('/', (req, res) => {
 })
 
 app.listen(config.port, () => log.info(`irsjpy node server listening on port ${config.port}`))
+
