@@ -16,6 +16,7 @@ spec:
       containers:
         - name: irsjpy-server
           image: <IMAGE>
+          imagePullPolicy: Always
           ports:
           - containerPort: 80
           env:

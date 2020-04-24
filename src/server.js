@@ -1,9 +1,9 @@
 const express = require('express')
 const body = require('body-parser')
 const cors = require('cors')
-const config = require('./config');
-const log = require('./log')(config);
-const data = require('./data')(config.databaseurl, log);
+const config = require('./config')
+const log = require('./log')(config)
+const data = require('./data')(config.databaseurl, log)
 
 const app = express()
 
