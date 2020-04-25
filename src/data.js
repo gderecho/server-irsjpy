@@ -14,6 +14,7 @@ class Data {
         this.pool.query(
                 `select org.name, 
                         org.address, 
+                        org.coords,
                         message.content, 
                         message.date, 
                         individual.name poster 
@@ -23,6 +24,12 @@ class Data {
                 left outer join individual 
                     on message.user_id = individual.id;
                 `, (err, res) => {
+            for(let row of res.rows) {
+                row.coords = {
+                    latitude: row.coords.x,
+                    longitude: row.coords.y
+                }
+            }
             callback(err, res)
         })
     }
