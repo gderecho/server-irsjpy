@@ -4,6 +4,7 @@ const cors = require('cors')
 const config = require('./config')
 const log = require('./log')(config)
 const data = require('./data')(config.databaseurl, log)
+const mailer = require('./mailer')
 
 const app = express()
 
@@ -27,7 +28,7 @@ app.get('/', (req, res) => {
         }
     )
 })
-app.post('/', (req, res) => {
+app.post('/', async (req, res, next) => {
     log.info(
         "Received request",
         {
@@ -38,6 +39,7 @@ app.post('/', (req, res) => {
             }
         }
     )
+    await mailer.send(req.body)
     res.send({
         stat: "Received message",
         msg: req.body,

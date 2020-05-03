@@ -25,6 +25,21 @@ spec:
                 secretKeyRef:
                   name: elephant-url
                   key: string
+            - name: GOOGLE_MAILER_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: google-mailer
+                  key: client-id
+            - name: GOOGLE_MAILER_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: google-mailer
+                  key: refresh-token
+            - name: GOOGLE_MAILER_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: google-mailer
+                  key: secret
             - name: IRSJPY_SERVER_PORT
               value: "80"
       imagePullSecrets:

@@ -7,7 +7,10 @@ module.exports = {
     port: parseInt(process.env.IRSJPY_SERVER_PORT, 10) || 3001,
     databaseurl: process.env.IRSJPY_DATABASE_URL,
     loglevel: process.env.IRSJPY_LOGLEVEL || 'silly',
-    environment: process.env.NODE_ENV
+    environment: process.env.NODE_ENV,
+    mailer_client_id: process.env.GOOGLE_MAILER_CLIENT_ID,
+    mailer_refresh_token: process.env.GOOGLE_MAILER_REFRESH_TOKEN,
+    mailer_secret: process.env.GOOGLE_MAILER_SECRET,
 }
 
 // check for undefined
