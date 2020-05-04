@@ -5,6 +5,7 @@ const config = require('./config')
 const log = require('./log')(config)
 const data = require('./data')(config.databaseurl, log)
 const mailer = require('./mailer')
+const validate = require('./validate')
 
 const app = express()
 
@@ -14,21 +15,23 @@ app.use(body.urlencoded({
 app.use(body.json())
 app.use(cors())
 
+
+// credit to https://qiita.com/yukin01/items/1a36606439123525dc6d
+const wrap = f => (res, req, next) => {
+    f(res, req, next).catch(next);
+}
+
 log.info("Loaded configuration", {configuration: config})
 
-app.get('/', (req, res) => {
-    data.messages(
-        (err, result) => {
-            if(err) {
-                log.error(err)
-            } else {
-                log.info("Queried database successfully")
-            }
-            res.send(result.rows)
-        }
-    )
-})
-app.post('/', async (req, res, next) => {
+
+
+app.get('/', wrap(async (req, res) => {
+    result = await data.messages();
+    res.send(result)
+}))
+
+
+app.post('/', wrap(async (req, res) => {
     log.info(
         "Received request",
         {
@@ -39,13 +42,24 @@ app.post('/', async (req, res, next) => {
             }
         }
     )
-    await mailer.send(req.body)
+    const body = await validate(req.body)
+    log.debug(
+        'Transformed request',
+        {req: body}
+    )
+    await mailer.send(body)
     res.send({
-        stat: "Received message",
-        msg: req.body,
+        stat: "Acknowledge message",
+        msg: body,
         method: `${req.method} ${req.originalUrl}`
     })
+}))
+
+app.use((err, req, res, next) => {
+    log.error("An error occured", {"details": err, "stack": err.stack})
+    next(err)
 })
 
-app.listen(config.port, () => log.info(`irsjpy node server listening on port ${config.port}`))
+
+app.listen(config.port, () => log.info(`irsjpy voices server listening on port ${config.port}`))
 

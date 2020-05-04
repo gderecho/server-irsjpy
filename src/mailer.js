@@ -34,6 +34,8 @@ const utify = (str) => {
     return `=?utf-8?B?${Buffer.from(str).toString('base64')}?=`
 }
 
+const stringify = (obj) => yaml.stringify(obj).replace(/"/g, '').replace(/: /g, '\r\n\t\t')
+
 
 const makeMessage = (content) => {
     return `
@@ -43,8 +45,7 @@ const makeMessage = (content) => {
 以下の内容で受け付けました。
 24時間以内に、当方より改めてご連絡申し上げます。
 
-${yaml.stringify(content)}
-
+` + stringify(content) + `
 ご質問及び回答を修正される場合はいつでも可能です。
 このメールアドレスにその旨を記載のうえ、ご返信くださいますようお願い申し上げます。
 
@@ -81,19 +82,15 @@ async function send(obj) {
         addr: obj.email
     })
     email.setMessage(
-        makeMessage(obj)
+        makeMessage(obj.content)
     )
 
-    try {
-        const res = await gmail.users.messages.send({
-            userId: 'me',
-            requestBody: {
-                raw: email.asEncoded()
-            }
-        });
-    } catch (err) {
-        console.error(err)
-    }
+    const res = await gmail.users.messages.send({
+        userId: 'me',
+        requestBody: {
+            raw: email.asEncoded()
+        }
+    });
 }
 
 module.exports = {
