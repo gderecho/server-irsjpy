@@ -1,80 +1,112 @@
 {
-    "apiVersion": "apps/v1",
-    "kind": "Deployment",
-    "metadata": {
-        "name": "irsjpy-server",
-        "namespace": "<NAMESPACE>"
-    },
-    "spec": {
-        "replicas": 3,
-        "selector": {
-            "matchLabels": {
-                "app": "irsjpy-server"
-            }
-        },
-        "template": {
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
             "metadata": {
-                "labels": {
-                    "app": "irsjpy-server"
-                }
+                "name": "irsjpy-server",
+                "namespace": "<NAMESPACE>"
             },
             "spec": {
-                "containers": [{
-                    "name": "irsjpy-server",
-                    "image": "<IMAGE>",
-                    "imagePullPolicy": "Always",
-                    "ports": [
-                        {
-                            "containerPort": 80
+                "replicas": 3,
+                "selector": {
+                    "matchLabels": {
+                        "app": "irsjpy-server"
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "app": "irsjpy-server"
                         }
-                    ],
-                    "env": [
-                        {
-                            "name": "IRSJPY_DATABASE_URL",
-                            "valueFrom": {
-                                "secretKeyRef": {
-                                    "name": "elephant-url",
-                                    "key": "string"
+                    },
+                    "spec": {
+                        "containers": [{
+                            "name": "irsjpy-server",
+                            "image": "<IMAGE>",
+                            "imagePullPolicy": "Always",
+                            "ports": [
+                                {
+                                    "containerPort": 80
                                 }
-                            }
-                        },
-                        {
-                            "name": "GOOGLE_MAILER_CLIENT_ID",
-                            "valueFrom": {
-                                "secretKeyRef": {
-                                    "name": "google-mailer",
-                                    "key": "client-id"
+                            ],
+                            "env": [
+                                {
+                                    "name": "IRSJPY_DATABASE_URL",
+                                    "valueFrom": {
+                                        "secretKeyRef": {
+                                            "name": "elephant-url",
+                                            "key": "string"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "GOOGLE_MAILER_CLIENT_ID",
+                                    "valueFrom": {
+                                        "secretKeyRef": {
+                                            "name": "google-mailer",
+                                            "key": "client-id"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "GOOGLE_MAILER_REFRESH_TOKEN",
+                                    "valueFrom": {
+                                        "secretKeyRef": {
+                                            "name": "google-mailer",
+                                            "key": "refresh-token"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "GOOGLE_MAILER_SECRET",
+                                    "valueFrom": {
+                                        "secretKeyRef": {
+                                            "name": "google-mailer",
+                                            "key": "secret"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "IRSJPY_SERVER_PORT",
+                                    "value": "80"
                                 }
-                            }
-                        },
-                        {
-                            "name": "GOOGLE_MAILER_REFRESH_TOKEN",
-                            "valueFrom": {
-                                "secretKeyRef": {
-                                    "name": "google-mailer",
-                                    "key": "refresh-token"
-                                }
-                            }
-                        },
-                        {
-                            "name": "GOOGLE_MAILER_SECRET",
-                            "valueFrom": {
-                                "secretKeyRef": {
-                                    "name": "google-mailer",
-                                    "key": "secret"
-                                }
-                            }
-                        },
-                        {
-                            "name": "IRSJPY_SERVER_PORT",
-                            "value": "80"
-                        }
-                    ]
-                }],
-                "imagePullSecrets": [{
-                    "name": "github"
-                }]
+                            ]
+                        }],
+                        "imagePullSecrets": [{
+                            "name": "github"
+                        }]
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "name": "irsjpy-server",
+                "namespace": "<NAMESPACE>"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 80,
+                        "protocol": "TCP",
+                        "targetPort": 80
+                    }
+                ],
+                "selector": {
+                    "app": "irsjpy-server"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
             }
         }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": "",
+        "selfLink": ""
     }
 }
